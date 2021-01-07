@@ -5,4 +5,5 @@ channels:
 dependencies:
   - python=3.8.6
   - pip:
+    - pandas==1.1.5
     - requests==2.25.0

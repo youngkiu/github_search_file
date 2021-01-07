@@ -5,4 +5,4 @@
 - Install Anaconda https://www.anaconda.com/products/individual#Downloads
 - (base) > conda env create -f environment.yml
 - (base) > conda activate github_search_file
-- (github_search_file) > pytho main.py [MYTOKEN]
+- (github_search_file) > pytho main.py -t &lt;TOKEN&gt; -o &lt;OWNER&gt;
