@@ -1,0 +1,8 @@
+name: github_search_file
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8.6
+  - pip:
+    - requests==2.25.0
