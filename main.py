@@ -111,33 +111,36 @@ if __name__ == '__main__':
     _df = pd.DataFrame(columns=_columns)
 
     # https://stackoverflow.com/questions/30656761/github-search-api-only-return-30-results
+    _repo_list = []
     _page_num = 1  # github default page_size: 30
-    _row_index = 0
     while True:
-        _repo_list = get_repositories(_args.token, _page_num)
-        if not _repo_list:
+        _repos = get_repositories(_args.token, _page_num)
+        if not _repos:
             break
 
-        for _repo in _repo_list:
-            if not _repo.startswith(_args.owner):
-                continue
-
-            _row = [_repo, ]
-            for _file_ext in _file_exts:
-                _path_list = get_num_of_files_with_ext(_args.token, _file_ext, _repo)
-                if isinstance(_path_list, list):
-                    print(_repo, f'.{_file_ext}', len(_path_list), _path_list)
-                else:
-                    print(f'[Error] page:{_page_num}, row:{_row_index}, {_args.owner}: {_path_list}')
-                _row.append(_path_list)
-
-                # https://github.community/t/search-api-returns-403-even-though-the-rate-limit-isnt-reached/13536/2
-                time.sleep(2)  # Don't delete this code. Without this code, will get a 403 return
-
-            _df.loc[_row_index] = _row
-            _row_index += 1
-
+        _repo_list += _repos
         _page_num += 1
+    print('Number of Reporitories: %d' % len(_repo_list))
+
+    _row_index = 0
+    for _repo in _repo_list:
+        if not _repo.startswith(_args.owner):
+            continue
+
+        _row = [_repo, ]
+        for _file_ext in _file_exts:
+            _path_list = get_num_of_files_with_ext(_args.token, _file_ext, _repo)
+            if isinstance(_path_list, list):
+                print(_repo, f'.{_file_ext}', len(_path_list), _path_list)
+            else:
+                print(f'[Error] page:{_page_num}, row:{_row_index}, {_args.owner}: {_path_list}')
+            _row.append(_path_list)
+
+            # https://github.community/t/search-api-returns-403-even-though-the-rate-limit-isnt-reached/13536/2
+            time.sleep(2)  # Don't delete this code. Without this code, will get a 403 return
+
+        _df.loc[_row_index] = _row
+        _row_index += 1
 
     _today_str = datetime.date.today().strftime("%Y%m%d")
     write_csf(f'{_args.owner}_repo_file_num_{_today_str}.csv', _columns, _df)
