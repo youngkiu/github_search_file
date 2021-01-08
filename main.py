@@ -87,7 +87,7 @@ def write_csf(csv_path, columns, df):
             for i in range(len(columns)):
                 cell_data = row[columns[i]]
                 if i == 0:
-                    csv_row.append(cell_data)
+                    csv_row.append(cell_data.replace('/', '/\n'))
                 else:
                     csv_row.append('\n'.join(cell_data))
                     csv_row.append(len(cell_data))
@@ -122,13 +122,11 @@ if __name__ == '__main__':
             if not _repo.startswith(_args.owner):
                 continue
 
-            _name = _repo[_repo.find('/')+1:]
-            _row = [_name, ]
-
+            _row = [_repo, ]
             for _file_ext in _file_exts:
                 _path_list = get_num_of_files_with_ext(_args.token, _file_ext, _repo)
                 if isinstance(_path_list, list):
-                    print(_name, f'.{_file_ext}', len(_path_list), _path_list)
+                    print(_repo, f'.{_file_ext}', len(_path_list), _path_list)
                 else:
                     print(f'[Error] page:{_page_num}, row:{_row_index}, {_args.owner}: {_path_list}')
                 _row.append(_path_list)
